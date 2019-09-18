@@ -1,5 +1,6 @@
 {
-  "name": "music-finder",
+  "homepage": "http://forati89.github.io/react-app-template",
+  "name": "react-app-template",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -27,5 +28,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^2.1.1"
   }
 }
