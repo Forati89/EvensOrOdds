@@ -3,11 +3,18 @@ import { connect } from 'react-redux';
 import Instructions from './Instructions';
 import {startGame, cancelGame } from '../actions/settings';
 import {Container, Col} from 'reactstrap';
+import {fetchDeckResult} from '../actions/deck';
 
 
 
 class App extends Component {
+    startGame = () =>{
+        this.props.startGame();
 
+        fetch('https://deck-of-cards-api-wrapper.appspot.com/deck/new/shuffle')
+        .then(response => response.json())
+        .then(json => this.props.fetchDeckResult(json))
+    }
 
     render() {
         return (
@@ -25,7 +32,7 @@ class App extends Component {
                     <div>
                         <h3>A new game awaits</h3>
                         <br/>
-                        <button onClick={this.props.startGame}>Start Game</button>
+                        <button onClick={this.startGame}>Start Game</button>
                         <hr />
                         <Instructions />
                     </div>
@@ -45,7 +52,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         startGame: ()=> dispatch(startGame()),
-        cancelGame: ()=> dispatch(cancelGame())
+        cancelGame: ()=> dispatch(cancelGame()),
+        fetchDeckResult: deckJson => dispatch(fetchDeckResult(deckJson))
     };
 }
 
