@@ -3,20 +3,26 @@ import { connect } from 'react-redux';
 import Instructions from './Instructions';
 import {startGame, cancelGame } from '../actions/settings';
 import {Container, Col} from 'reactstrap';
-import {fetchDeckResult} from '../actions/deck';
+import fetchStates from '../reducers/fetchStates';
+import {fetchNewDeck} from '../actions/deck';
 
 
 
 class App extends Component {
     startGame = () =>{
         this.props.startGame();
-
-        fetch('https://deck-of-cards-api-wrapper.appspot.com/deck/new/shuffle')
-        .then(response => response.json())
-        .then(json => this.props.fetchDeckResult(json))
+        this.props.fetchNewDeck();
     }
 
     render() {
+        if(this.props.fetchState === fetchStates.error){
+            return (
+                <div>
+                    <p>Please try reloading the app. An error occurred.</p>
+                    <p>{this.props.message}</p>
+                </div>
+            )
+        }
         return (
         <div>
             <Col sm="12" md={{ size: 6, offset: 3 }}>
@@ -45,19 +51,24 @@ class App extends Component {
     }
 }
 
+
 const mapStateToProps = state => {
-    return {gameStarted: state.gameStarted}
+    const {gameStarted, fetchState, message} = state;
+    return {gameStarted, fetchState, message}
 }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        startGame: ()=> dispatch(startGame()),
-        cancelGame: ()=> dispatch(cancelGame()),
-        fetchDeckResult: deckJson => dispatch(fetchDeckResult(deckJson))
-    };
-}
+// const mapDispatchToProps = dispatch => {
+//     return {
+//         startGame: ()=> dispatch(startGame()),
+//         cancelGame: ()=> dispatch(cancelGame()),
+//         fetchNewDeck: () => fetchNewDeck(dispatch)
+//     };
+// }
 
-const componentConnector = connect(mapStateToProps, mapDispatchToProps);
+const componentConnector = connect(
+    mapStateToProps,
+    {startGame, cancelGame, fetchNewDeck}    
+    );
 
 
 export default componentConnector(App);
